@@ -310,7 +310,7 @@ function renderScatterplotMatrix(intrinsic_index) {
         .attr("dy", ".71em")
         .text(function (d) { return d.x; })
         // .attr("class","title")
-        .style("font-size", "25px");
+        .style("font-size", "17px");
     // cell.call(brush);
     function plot(p) {
         var cell = d3.select(this);

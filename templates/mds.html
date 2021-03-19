@@ -1,0 +1,168 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        /* svg rect {
+                fill: teal;
+            } */
+        .button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .bar {
+            fill: teal;
+        }
+
+        .scatterRect {
+            fill: white;
+        }
+
+        svg text {
+            fill: dimgray;
+            font: 12px sans-serif;
+            text-anchor: end;
+        }
+
+        .biplot_text {
+            fill: black;
+            font: 15px sans-serif;
+            text-anchor: end;
+        }
+
+        div h1 {
+            fill: dimgray;
+            font: 12px sans-serif;
+            text-anchor: end;
+
+        }
+
+        .line {
+            stroke: red;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .dot {
+            fill: white;
+            stroke: teal;
+
+        }
+
+        .dot2 {
+            fill: teal;
+            stroke: black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #333;
+            color: white;
+            font-weight: bold;
+            cursor: s-resize;
+            background-repeat: no-repeat;
+            background-position: 3% center;
+        }
+
+        td,
+        th {
+            padding: 6px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .task2_area.tick {
+            opacity: 0;
+        }
+
+
+        .task4_area svg {
+            font: 10px sans-serif;
+        }
+
+        .background path {
+            fill: none;
+            stroke: #ddd;
+            shape-rendering: crispEdges;
+        }
+
+        .foreground path {
+            fill: none;
+            stroke: teal;
+        }
+
+        .axis line,
+        .axis path {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text {
+            text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+            cursor: move;
+            font: 15px sans-serif;
+        }
+
+        .brush .extent {
+            fill-opacity: .3;
+            stroke: #fff;
+            shape-rendering: crispEdges;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">MLS Player Statistics</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}">PCA</a></li>
+                <li class="active"><a href="">MDS/Parallel</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <div style="width: 1600px; height: 750px; align-content: center;" id="task3_area">
+        <div style="width: 50%; float: left;" id="data_mds_area"></div>
+        <div style="width: 50%; float: right;" id="attr_mds_area">
+        </div>
+    </div>
+    <div style="width : 1600px; text-align: right;">
+        <button class="button" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            onclick="updatePCP()">
+            Update PCP
+        </button>
+    </div>
+    <div style="width: 1600px; height: 750;" id="task4_area"></div>
+    <!-- <div style="width: 1200px; height: 550px;" id="task2_table"></div> -->
+
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script> -->
+
+    <script>
+        var data = {{ data.chart_data | safe }}
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='mds.js') }}"></script>
+</body>
+
+</html>
