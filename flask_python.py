@@ -41,14 +41,24 @@ def index():
 # 	return render_template("mds.html", data=final_data)
 
 @app.route('/data_info')
-def data_info():	
+def data_info():
+	data = pd.read_csv("merged_pgatour.csv")
+	features = data.columns
+	return {
+		'features': features.tolist(),
+		'data': data.to_dict(orient='records')
+	}
+
+
+@app.route('/data_info1')
+def data_info1():	
 	number_of_points = 500
-	data_x = pd.read_csv("pgatour_cleaned.csv")
+	data_x = pd.read_csv("merged_pgatour.csv")
 	#Colums with numerical data
 	
 	named_features = ["ID", "Name","rounds","scoring","drive_distance", "fwy_%",
 	"gir_%", "sg_p", "sg_ttg", "sg_t", "points", "top_10", "1st_pos", 
-	"year", "money", "country"]
+	"year", "money", "country","latitude","longitude"]
 
 	data_x.columns = named_features
 	features = data_x.columns[3:-1]
