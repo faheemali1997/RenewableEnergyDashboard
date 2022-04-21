@@ -91,3 +91,13 @@ export const getFilteredData = (data, filter, excludeFilter) => {
         return isFiltered;
     })
 }
+
+export const scaleBandInvert = (scale) => {
+    var domain = scale.domain()
+    var range = scale.range()
+    var invScale = d3.scaleQuantize().domain(range).range(domain)
+
+    return function(val){
+        return invScale(val)
+    }
+}

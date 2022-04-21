@@ -49,6 +49,27 @@ def data_info():
 		'data': data.to_dict(orient='records')
 	}
 
+	# features = ["country","country_x","year","biofuel_consumption","coal_consumption","fossil_fuel_consumption","gas_consumption","hydro_consumption","nuclear_consumption","oil_consumption","other_renewable_consumption","renewables_consumption","solar_consumption","wind_consumption",
+	# 			"coal_production","gas_production","oil_production",""
+	# 			"electricity_generation","population","gdp"
+	# 			"biofuel_electricity","coal_electricity","fossil_electricity","gas_electricity","hydro_electricity","nuclear_electricity","oil_electricity","other_renewable_electricity","other_renewable_exc_biofuel_electricity","renewables_electricity","solar_electricity","wind_electricity",
+	# 			]
+
+@app.route('/data_energy')
+def data_energy():
+	data = pd.read_csv("WorldEnergyConsumption.csv")
+	features = data.columns
+	data = data[0:2000]
+	data = data.fillna(0)
+	print(data)
+	# features = ["country","country_x","gdp","population","year","biofuel_consumption","coal_consumption","fossil_fuel_consumption","gas_consumption","hydro_consumption","nuclear_consumption","oil_consumption","other_renewable_consumption","renewables_consumption","solar_consumption","wind_consumption"]
+	# consumption_data = data[features]
+	# consumption_data.fillna(0)
+	return {
+		'features': features.tolist(),
+		'data': data.to_dict(orient='records')
+	}
+
 
 @app.route('/data_info1')
 def data_info1():	

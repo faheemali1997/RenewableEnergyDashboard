@@ -42,7 +42,7 @@ class WorldBubbleMap extends Component {
         const projection = d3.geoNaturalEarth1();
         const path = d3.geoPath(projection);
 
-        console.log(nuclearCountries);
+        // console.log(nuclearCountries);
 
         // const filteredData = getFilteredData(explosionsData, filter, "");
         const filteredData = explosionsData;
@@ -83,13 +83,12 @@ class WorldBubbleMap extends Component {
             .data(countries.features)
             .join("path")
             .attr("fill", d => {
-                console.log(d);
                 if (nuclearCountries.indexOf(d.properties.name) !== -1 &&
                     (filter.country.size === 0 || filter.country.has(d.properties.name))) {
-                    console.log("ColorScale");
+                    // console.log("ColorScale");
                     return colorScale(d.properties.name);
                 } else {
-                    console.log("ColorScale Disabled");
+                    // console.log("ColorScale Disabled");
                     return colorScale(d.properties.name);
                     //[TODO]
                     // return Constants.DISABLED_COLOR;

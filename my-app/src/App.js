@@ -9,6 +9,10 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import WorldBubbleMap from './WorldBubbleMap';
+import StackedBarchartType from './StackedBarchartType';
+import ParallelCoordinatePlot from './ParallelCoordinatePlot';
+import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
+import PieChart from './PieChart';
 
 import { LABEL } from "./utils/labels";
 
@@ -22,6 +26,7 @@ class App extends Component {
         this.state = {
 			countries: [],
 			original_data: [],
+            features:[],
 			filter: {
 				country: new Set(),
 				type: new Set(),
@@ -41,18 +46,19 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch("/data_info")
+        console.log("XYZ");
+        fetch("/data_energy")
             .then(res => res.json())
             .then(
                 (res) => {
+                    console.log("1");
                     let countries = res["data"].map(d => d.country);
+                    console.log(countries);
                     this.setState({
                     	countries: [...new Set(countries)],
-						original_data: res["data"]
+						original_data: res["data"],
+                        features: res["features"]
                     })
-                    
-					console.log(countries);
-
                     this.colorScale = d3.scaleOrdinal()
                         .domain(countries)
                         .range(d3.schemeCategory10)
@@ -123,31 +129,41 @@ class App extends Component {
                 </Navbar>
                 <Container fluid style={{ height: "96vh", paddingTop: "40px" }}>
                     <Row>
+						<Col className="main-col-cards" sm={6}>
+                            <Card style={{ height: "48vh" }}>
+                                <WorldBubbleMap
+                                    explosionsData={this.state.original_data}
+                                    colorScale={this.colorScale}
+                                    nuclearCountries={this.state.countries}
+                                    filter={this.state.filter}
+                                />
+                            </Card>
+                        </Col>
                         <Col sm={3}>
-                            <Row>
+                            {/* <Row>
                                 <Col className="main-col-cards" sm={12}>
                                     <Card style={{ height: "24vh" }}>
-                                        {/* <BarchartCountries
+                                        <BarchartCountries
                                             explosionsData={this.state.explosionsData}
                                             colorScale={this.colorScale}
                                             filter={this.state.filter}
                                             addToFilter={this.addToFilter}
                                             removeFromFilter={this.removeFromFilter}
-                                        /> */}
+                                        />
                                     </Card>
                                 </Col>
-                            </Row>
+                            </Row> */}
                             <Row>
                                 <Col className="main-col-cards" sm={12}>
                                     <Card style={{ height: "24vh" }}>
-                                        {/* <StackedBarchartType
-                                            explosionsData={this.state.explosionsData}
+                                        <StackedBarchartType
+                                            explosionsData={this.state.original_data}
                                             colorScale={this.colorScale}
-                                            nuclearCountries={this.state.nuclearCountries}
+                                            nuclearCountries={this.state.countries}
                                             filter={this.state.filter}
                                             addToFilter={this.addToFilter}
                                             removeFromFilter={this.removeFromFilter}
-                                        /> */}
+                                        />
                                     </Card>
                                 </Col>
                             </Row>
@@ -164,51 +180,35 @@ class App extends Component {
                                 /> */}
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={6}>
-                            <Card style={{ height: "48vh" }}>
-                                <WorldBubbleMap
-                                    explosionsData={this.state.original_data}
-                                    colorScale={this.colorScale}
-                                    nuclearCountries={this.state.countries}
-                                    filter={this.state.filter}
-                                />
-                            </Card>
-                        </Col>
                     </Row>
                     <Row>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
-                                {/* <ExplosionsStackedAreaChart
-                                    explosionsData={this.state.explosionsData}
-                                    explosionsFeatures={this.state.explosionsFeatures}
+                                <ExplosionsStackedAreaChart
+                                    explosionsData={this.state.original_data}
+                                    explosionsFeatures={this.state.features}
                                     colorScale={this.colorScale}
-                                    nuclearCountries={this.state.nuclearCountries}
+                                    nuclearCountries={this.state.countries}
                                     filter={this.state.filter}
                                     addRangeFilter={this.addRangeFilter}
-                                /> */}
+                                />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
-                                {/* <ParallelCoordinatePlot
-                                    explosionsData={this.state.explosionsData}
+                                <ParallelCoordinatePlot
+                                    explosionsData={this.state.original_data}
                                     colorScale={this.colorScale}
                                     filter={this.state.filter}
                                     addRangeFilter={this.addRangeFilter}
                                     addToFilter={this.addToFilter}
                                     removeFromFilter={this.removeFromFilter}
-                                /> */}
+                                />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
-                                {/* <InventoryMultiLineChart
-                                    inventoryData={this.state.inventoryData}
-                                    inventoryFeatures={this.state.inventoryFeatures}
-                                    colorScale={this.colorScale}
-                                    nuclearCountries={this.state.nuclearCountries}
-                                    filter={this.state.filter}
-                                /> */}
+                                <PieChart/>
                             </Card>
                         </Col>
                     </Row>
