@@ -1,0 +1,93 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style.css"/>
+</head>
+
+<body>
+    <nav class="navbar" style="background-color: #1DB954;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('main') }}" style="color: #191414">PGA Tour</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('main') }}" style="color: #191414">PCA</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('biplot') }}" style="color: #191414">Biplot</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('kmeans') }}" style="color: #191414">KMeans Clustering</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{{ url_for('mds') }}" style="color: #191414">MDS Plot</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!--Reference: https://getbootstrap.com/docs/3.4/javascript/#collapse -->
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                Task4(a) : MDS Plot - Data
+              </a>
+            </h4>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div style="width: 1300px; height: 500px; align-content: center;" id="task3_area">
+                    <div style="width: 50%; float: left;" id="mds_data"></div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Task4(b) : MDS Plot - Features
+              </a>
+            </h4>
+          </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <div style="width: 1300px; height: 500px; align-content: center;" id="task3_area">
+                    <div style="width: 50%; float: left;" id="mds_attr"></div>
+                </div>
+                <div style="text-align: left;">
+                    <button class="button" type="button" id="dropdownMenuButton" data-toggle="dropdown" onclick="onPCPUpdate()">
+                        PCP Update
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Task5 : Parallel Coordinates Plot
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <div style="width: 1600px; height: 750px;" id="task4_area"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script>
+        var data = {{ data.chart_data | safe }}
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='mds.js') }}"></script>
+</body>
+</html>
+
