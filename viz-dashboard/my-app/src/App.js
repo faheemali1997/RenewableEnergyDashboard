@@ -24,8 +24,8 @@ class App extends Component {
         super(props);
 
         this.state = {
+            countries_map: {},
 			countries: [],
-            countries_x: [],
 			original_data: [],
             features:[],
 			filter: {
@@ -51,11 +51,17 @@ class App extends Component {
             .then(res => res.json())
             .then(
                 (res) => {
-                    let countries = res["data"].map(d => d.country);
-                    let countries_x = res["data"].map(d => d.country_x);
+                    let c = {}
+                    for(let row in res["data"]){
+                        let country = res["data"][row].country
+                        if(Object.keys(c).indexOf(country) == -1){
+                            c[country] = res["data"][row].country_x;
+                        }
+                    }
+                    let countries = res["data"].map(d=> d.country)
                     this.setState({
+                        countries_map: c,
                     	countries: [...new Set(countries)],
-                        countries_x: [...new Set(countries_x)],
 						original_data: res["data"],
                         features: res["features"],
                     })
@@ -132,6 +138,7 @@ class App extends Component {
 						<Col className="main-col-cards" sm={6}>
                             <Card style={{ height: "48vh" }}>
                                 <WorldBubbleMap
+                                    countries_map={this.state.countries_map}
                                     explosionsData={this.state.original_data}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.countries}
@@ -141,7 +148,7 @@ class App extends Component {
                                 />
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={6}>
+                        <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "48vh" }}>
                                 <StackedBarchartType
                                     explosionsData={this.state.original_data}
@@ -153,18 +160,16 @@ class App extends Component {
                                 />
                             </Card>
                         </Col>
-                        {/* <Col className="main-col-cards" sm={3}>
-                            <Card style={{ height: "48vh" }}>
-                                <StackedHorizontalBarchartPurpose
-                                    explosionsData={this.state.explosionsData}
-                                    colorScale={this.colorScale}
-                                    nuclearCountries={this.state.nuclearCountries}
-                                    filter={this.state.filter}
-                                    addToFilter={this.addToFilter}
-                                    removeFromFilter={this.removeFromFilter}
-                                />
-                            </Card>
-                        </Col> */}
+                        <Col className="main-col-cards" sm={3}>
+                            <PieChart
+                                explosionsData={this.state.original_data}
+                                colorScale={this.colorScale}
+                                nuclearCountries={this.state.countries}
+                                filter={this.state.filter}
+                                addToFilter={this.addToFilter}
+                                removeFromFilter={this.removeFromFilter}
+                            />
+                        </Col>
                     </Row>
                     <Row>
                         <Col className="main-col-cards" sm={4}>
@@ -193,7 +198,6 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
-                                <PieChart/>
                             </Card>
                         </Col>
                     </Row>

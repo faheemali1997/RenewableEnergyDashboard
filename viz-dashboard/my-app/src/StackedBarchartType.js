@@ -65,7 +65,7 @@ class StackedBarchartType extends Component {
         //     }
         // }
 
-        let type = ["solar_consumption", "wind_consumption", "biofuel_consumption", "hydro_consumption", "other_renewable_consumption", "renewables_consumption"];
+        let type = ["solar_consumption", "wind_consumption", "biofuel_consumption", "hydro_consumption", "other_renewable_consumption"];
         let data = [];
         let dummy = {
             "name": "",
@@ -141,11 +141,11 @@ class StackedBarchartType extends Component {
             .attr("height", d => yScale(d[0]) - yScale(d[1]))
             .attr("width", xScale.bandwidth())
             .on("click", function (e, d) {
-                // if (filter.type.has(d.data.name)) {
-                //     removeFromFilter("type", d.data.name);
-                // } else {
-                //     addToFilter("type", d.data.name);
-                // }
+                if (filter.type.has(d.data.name)) {
+                    removeFromFilter("type", d.data.name);
+                } else {
+                    addToFilter("type", d.data.name);
+                }
             });
 
         svg.append("g")
