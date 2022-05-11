@@ -125,17 +125,22 @@ class WorldBubbleMap extends Component {
             .data(countries.features)
             .join("path")
             .attr("fill", d => {
-                if (renew_countries.indexOf(d.properties.name) !== -1 &&
-                    (filter.country.size === 0 || filter.country.has(renew_map[d.properties.name]))) {
+                if (renew_countries.indexOf(d.properties.name) !== -1) {
                     return colorScale(renew_map[d.properties.name]);
                 } else {
                     return Constants.DISABLED_COLOR;
                 }
             })
-            .attr("fill-opacity", d => renew_countries.indexOf(d.properties.name) !== -1 ? 0.3 : 0.6)
+            .attr("fill-opacity", d => {
+                if(filter.country.has(renew_map[d.properties.name])){
+                    return 0.6
+                }else{
+                    return 0.3;
+                }
+            })   
             .attr("d", path)
-            // .on("mouseover", mouseOver )
-            // .on("mouseleave", mouseLeave )
+            .on("mouseover", mouseOver )
+            .on("mouseleave", mouseLeave )
             .on("click", function(e, d){
                 let c = renew_map[d.properties.name]
                 if(filter.country.has(c)){
@@ -156,17 +161,17 @@ class WorldBubbleMap extends Component {
             .attr("d", path);
 
 
-        const circles = svg.append("g")
-            .selectAll("circle")
-            .data(data.filter(d => d.position))
-            .join("circle")
-            .attr("transform", d => `translate(${d.position[0]},${d.position[1]})`)
-            .attr("fill", d => colorScale(d.country))
-            .attr("fill-opacity", 0.25)
-            .attr("stroke", d => colorScale(d.country))
-            .attr("stroke-opacity", 0.5)
-            .attr("stroke-width", 0.5)
-            .attr("r", d => magScale(d.magnitude_body));
+        // const circles = svg.append("g")
+        //     .selectAll("circle")
+        //     .data(data.filter(d => d.position))
+        //     .join("circle")
+        //     .attr("transform", d => `translate(${d.position[0]},${d.position[1]})`)
+        //     .attr("fill", d => colorScale(d.country))
+        //     .attr("fill-opacity", 0.25)
+        //     .attr("stroke", d => colorScale(d.country))
+        //     .attr("stroke-opacity", 0.5)
+        //     .attr("stroke-width", 0.5)
+        //     .attr("r", d => magScale(d.magnitude_body));
             
             
             // .on("mouseover", function (e, d) {
@@ -233,7 +238,7 @@ class WorldBubbleMap extends Component {
             countriesGroup.attr("transform", transform);
             countriesGroup.attr("stroke-width", 1 / transform.k);
 
-            circles.attr("transform", d => `translate(${transform.apply(d.position)})`)
+            // circles.attr("transform", d => `translate(${transform.apply(d.position)})`)
         }
 
         svg.append("text")
