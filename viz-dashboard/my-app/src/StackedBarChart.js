@@ -19,8 +19,8 @@ class StackedBarchart extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.explosionsData.length !== prevProps.explosionsData.length
-            || this.props.explosionsData !== prevProps.explosionsData
+        if (this.props.original_data.length !== prevProps.original_data.length
+            || this.props.original_data !== prevProps.original_data
             || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.STACKED_BARCHART_TYPE_SVG_CONTAINER_ID).select("svg");
@@ -32,9 +32,9 @@ class StackedBarchart extends Component {
     drawChart = () => {
 
         const {
-            explosionsData,
+            original_data,
             colorScale,
-            nuclearCountries,
+            countries,
             filter,
             addToFilter,
             removeFromFilter
@@ -42,7 +42,7 @@ class StackedBarchart extends Component {
 
         const margin = ({ top: 30, right: 10, bottom: 40, left: 50 });
 
-        const filteredData = getFilteredData(explosionsData, filter, "");
+        const filteredData = getFilteredData(original_data, filter, "");
 
         let type = ["solar_consumption", "wind_consumption", "biofuel_consumption", "hydro_consumption", "other_renewable_consumption"];
         let data = [];
@@ -76,7 +76,7 @@ class StackedBarchart extends Component {
         }
 
         const data_stacked = d3.stack()
-            .keys(nuclearCountries)
+            .keys(countries)
             (data)
             .map(d => (d.forEach(v => v.key = d.key), d));
 

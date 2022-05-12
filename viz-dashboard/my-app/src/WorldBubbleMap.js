@@ -21,8 +21,8 @@ class WorldBubbleMap extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.explosionsData.length !== prevProps.explosionsData.length
-            || this.props.explosionsData !== prevProps.explosionsData
+        if (this.props.original_data.length !== prevProps.original_data.length
+            || this.props.original_data !== prevProps.original_data
             || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID).select("svg");
@@ -35,10 +35,10 @@ class WorldBubbleMap extends Component {
 
         const {
             countries_map,
-            explosionsData,
+            original_data,
             top_15_data,
             colorScale,
-            nuclearCountries,
+            // countries,
             filter,
             addToFilter,
             removeFromFilter
@@ -48,7 +48,7 @@ class WorldBubbleMap extends Component {
         const path = d3.geoPath(projection);
 
         const filteredData = getFilteredData(top_15_data, filter, "");
-        const filteredData_all = getFilteredData(explosionsData, filter, "");
+        const filteredData_all = getFilteredData(original_data, filter, "");
 
         let country_short = Object.keys(countries_map);
         let country_long = Object.values(countries_map);

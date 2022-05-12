@@ -167,10 +167,10 @@ class App extends Component {
 
                                 <WorldBubbleMap
                                     countries_map={this.top_15_countries}
-                                    explosionsData={this.state.original_data}
+                                    original_data={this.state.original_data}
                                     top_15_data={this.state.top_15_data}
                                     colorScale={this.colorScale}
-                                    nuclearCountries={this.state.countries}
+                                    countries={this.state.countries}
                                     filter={this.state.filter}
                                     addToFilter={this.addToFilter}
                                     removeFromFilter={this.removeFromFilter}
@@ -180,9 +180,9 @@ class App extends Component {
                         <Col className="main-col-cards" sm={6}>
                             <Card style={{ height: "48vh" }}>
                                 <StackedBarchart
-                                    explosionsData={this.state.top_15_data}
+                                    original_data={this.state.top_15_data}
                                     colorScale={this.colorScale}
-                                    nuclearCountries={this.state.countries}
+                                    countries={this.state.countries}
                                     filter={this.state.filter}
                                     addToFilter={this.addToFilter}
                                     removeFromFilter={this.removeFromFilter}
@@ -197,10 +197,10 @@ class App extends Component {
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
                                 <StackedAreaChart
-                                    explosionsData={this.state.top_15_data}
-                                    explosionsFeatures={this.state.features}
+                                    original_data={this.state.top_15_data}
+                                    features={this.state.features}
                                     colorScale={this.colorScale}
-                                    nuclearCountries={this.state.countries}
+                                    countries={this.state.countries}
                                     filter={this.state.filter}
                                     addRangeFilter={this.addRangeFilter}
                                 />
@@ -209,7 +209,7 @@ class App extends Component {
                         <Col className="main-col-cards" sm={5}>
                             <Card style={{ height: "47vh" }}>
                                 <ParallelCoordinatePlot
-                                    explosionsData={this.state.top_15_data}
+                                    original_data={this.state.top_15_data}
                                     colorScale={this.colorScale}
                                     filter={this.state.filter}
                                     addRangeFilter={this.addRangeFilter}
@@ -221,9 +221,9 @@ class App extends Component {
                         <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "47vh" }}>
                             <PieChart
-                                explosionsData={this.state.top_15_data}
+                                original_data={this.state.top_15_data}
                                 colorScale={this.colorScale}
-                                nuclearCountries={this.state.countries}
+                                countries={this.state.countries}
                                 filter={this.state.filter}
                                 addToFilter={this.addToFilter}
                                 removeFromFilter={this.removeFromFilter}

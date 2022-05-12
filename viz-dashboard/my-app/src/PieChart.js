@@ -20,8 +20,8 @@ class PieChart extends Component {
 
 
     componentDidUpdate(prevProps) {
-      if (this.props.explosionsData.length !== prevProps.explosionsData.length
-        || this.props.explosionsData !== prevProps.explosionsData
+      if (this.props.original_data.length !== prevProps.original_data.length
+        || this.props.original_data !== prevProps.original_data
         || this.props.filter !== prevProps.filter
       )   
       { const svg = d3.select("#" + Constants.PIE_CHART_SVG_CONTAINER_ID).select("svg");
@@ -33,16 +33,16 @@ class PieChart extends Component {
     drawChart = () => {
 
       const {
-        explosionsData,
+        original_data,
         colorScale,
-        nuclearCountries,
+        countries,
         filter,
         addToFilter,
         removeFromFilter
       } = this.props;
 
 
-      const filteredData = getFilteredData(explosionsData, filter, "");
+      const filteredData = getFilteredData(original_data, filter, "");
 
 
       const data = [

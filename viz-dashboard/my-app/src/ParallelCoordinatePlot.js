@@ -19,8 +19,8 @@ class ParallelCoordinatePlot extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.explosionsData.length !== prevProps.explosionsData.length
-            || this.props.explosionsData !== prevProps.explosionsData
+        if (this.props.original_data.length !== prevProps.original_data.length
+            || this.props.original_data !== prevProps.original_data
             || this.props.filter.country !== prevProps.filter.country
             || this.props.filter.purpose !== prevProps.filter.purpose
             || this.props.filter.yearRange !== prevProps.filter.yearRange
@@ -33,7 +33,7 @@ class ParallelCoordinatePlot extends Component {
 
     drawChart() {
         const {
-            explosionsData,
+            original_data,
             colorScale,
             filter,
             addRangeFilter,
@@ -43,7 +43,7 @@ class ParallelCoordinatePlot extends Component {
 
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });
 
-        const filteredData = getFilteredData(explosionsData, filter, "");
+        const filteredData = getFilteredData(original_data, filter, "");
 
         const dimensions = [
             {

@@ -22,8 +22,8 @@ class StackedAreaChart extends Component {
     componentDidUpdate(prevProps) {
 
         if (
-            this.props.explosionsData !== prevProps.explosionsData
-            || this.props.explosionsFeatures !== prevProps.explosionsFeatures
+            this.props.original_data !== prevProps.original_data
+            || this.props.features !== prevProps.features
             || this.props.filter.country !== prevProps.filter.country
             || this.props.filter.type !== prevProps.filter.type
             || this.props.filter.purpose !== prevProps.filter.purpose
@@ -42,15 +42,15 @@ class StackedAreaChart extends Component {
     drawChart = () => {
 
         const {
-            explosionsData,
-            explosionsFeatures,
-            nuclearCountries,
+            original_data,
+            features,
+            countries,
             colorScale,
             filter,
             addRangeFilter,
         } = this.props;
 
-        if (explosionsData.length === 0 || explosionsFeatures.length === 0) {
+        if (original_data.length === 0 || features.length === 0) {
             return
         }
         const margin = ({ top: 30, right: 20, bottom: 60, left: 45 });
@@ -59,8 +59,7 @@ class StackedAreaChart extends Component {
         this.height2 = 30
         this.height1 = this.height - this.height2
 
-        const filteredData = getFilteredData(explosionsData, filter, "");
-        // const filteredData = explosionsData;
+        const filteredData = getFilteredData(original_data, filter, "");
 
         let data = [];
         let dummy = {
@@ -96,7 +95,7 @@ class StackedAreaChart extends Component {
         }
         data = data.slice(1)
 
-        const series = d3.stack().keys(nuclearCountries)(data)
+        const series = d3.stack().keys(countries)(data)
 
         const x = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Year))
