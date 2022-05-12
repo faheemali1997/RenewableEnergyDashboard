@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import * as topojson from "topojson-client";
 import { Constants } from './utils/labels';
 import countries_data from './data/countries-110m.json';
+import countries_data_1 from './data/country_code.json';
 import { getFilteredData } from './utils/utility';
 import { LABEL } from "./utils/labels";
 
@@ -35,6 +36,7 @@ class WorldBubbleMap extends Component {
         const {
             countries_map,
             explosionsData,
+            top_15_data,
             colorScale,
             nuclearCountries,
             filter,
@@ -45,9 +47,9 @@ class WorldBubbleMap extends Component {
         const projection = d3.geoNaturalEarth1();
         const path = d3.geoPath(projection);
 
-        const filteredData = getFilteredData(explosionsData, filter, "");
+        const filteredData = getFilteredData(top_15_data, filter, "");
+        const filteredData_all = getFilteredData(explosionsData, filter, "");
         
-        // let renew_countries = ["Canada", "India", "China", "United States of America", "Australia","France"];
         let renew_map = {
             "Canada" : "CAN", 
             "India" : "IND", 
@@ -71,28 +73,52 @@ class WorldBubbleMap extends Component {
             })
         }));
 
-        let map ={
-            "hydro_consumption" : {
-                "USA":15000000,
-                "CHN":20000000,
-                "IND":8000000
-            },
-            "wind_consumption" : {
-                "USA":15000000,
-                "CHN":20000000,
-                "IND":8000000
-            },
-            "solar_consumption" : {
-                "USA":15000000,
-                "CHN":20000000,
-                "IND":8000000
-            },
-            "bio_consumption" : {
-                "USA":15000000,
-                "CHN":20000000,
-                "IND":8000000
+        // let map ={
+        //     "hydro_consumption" : {
+        //         "USA":15000000,
+        //         "CHN":20000000,
+        //         "IND":8000000
+        //     },
+        //     "wind_consumption" : {
+        //         "USA":15000000,
+        //         "CHN":20000000,
+        //         "IND":8000000
+        //     },
+        //     "solar_consumption" : {
+        //         "USA":15000000,
+        //         "CHN":20000000,
+        //         "IND":8000000
+        //     },
+        //     "bio_consumption" : {
+        //         "USA":15000000,
+        //         "CHN":20000000,
+        //         "IND":8000000
+        //     }
+        // }
+
+        let max = 0;
+        let min = 100000000;
+        let hydro_map = new Map();
+        for(let row in filteredData_all){
+            let country = filteredData_all[row].country;
+            let country_code = countries_data_1.filter(d => d["alpha-3"] == country);
+            if(typeof country_code !== 'undefined'){
+                let h = filteredData_all[row].hydro_consumption;
+                if(typeof country_code[0] !== 'undefined'){
+                    let cc = country_code[0]["country-code"];
+                    let value = hydro_map.get(cc) || 0;
+                    if(value > max){
+                        max = value;
+                    }
+                    if(value < min){
+                        min = value;
+                    }
+                    hydro_map.set(cc, value + h)
+                }
             }
         }
+        console.log("MAX: " + max)
+        console.log("MIN :"+ min)
 
         const zoom = d3.zoom()
             .scaleExtent([1, 8])
@@ -144,7 +170,7 @@ class WorldBubbleMap extends Component {
         let fillColour = function(d){
 
             var colorScale_blue = d3.scaleThreshold()
-                        .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+                        .domain([1, 1000, 10000, 500000, 1000000, 100000000])
                         .range(d3.schemeBlues[7]);
             
             var colorScale_green = d3.scaleThreshold()
@@ -152,7 +178,7 @@ class WorldBubbleMap extends Component {
                 .range(d3.schemeGreens[7]);
 
             var colorScale_gray = d3.scaleThreshold()
-                .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+                .domain([1000, 10000, 100000, 500000, 1000000, 10000000])
                 .range(d3.schemeGreys[7]);
             
 
@@ -171,8 +197,10 @@ class WorldBubbleMap extends Component {
                 d.total = 100000000;
                 return colorScale_gray(d.total);
             }else if(filter.type.has("hydro_consumption")){
-                d.total = map["hydro_consumption"][renew_map[d.properties.name]] || 0;
-                return colorScale_blue(d.total);
+                // d.total = map["hydro_consumption"][country_short[country_long.indexOf(d.properties.name)]] || 0;
+                let value = hydro_map.get(d.id);
+                console.log("Val: " + value);
+                return colorScale_blue(value);
             }
 
         } 

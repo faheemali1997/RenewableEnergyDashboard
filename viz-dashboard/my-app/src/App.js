@@ -160,7 +160,7 @@ class App extends Component {
                             <Card style={{ height: "48vh" }}>
                                 <WorldBubbleMap
                                     countries_map={this.top_15_countries}
-                                    explosionsData={this.state.top_15_data}
+                                    explosionsData={this.state.original_data}
                                     top_15_data={this.state.top_15_data}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.countries}

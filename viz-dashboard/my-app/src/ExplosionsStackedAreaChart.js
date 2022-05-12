@@ -76,7 +76,6 @@ class ExplosionsStackedAreaChart extends Component {
         for(let row in filteredData){
             let country = filteredData[row].country;
             let curr_year = filteredData[row].year;
-            console.log(curr_year);
             let flag = 0;
             for(let d in data){
                 let obj = data[d]
