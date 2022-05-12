@@ -43,27 +43,6 @@ class StackedBarchartType extends Component {
         const margin = ({ top: 30, right: 10, bottom: 40, left: 50 });
 
         const filteredData = getFilteredData(explosionsData, filter, "");
-        // const filteredData = explosionsData;
-
-        // let dataMap = new Map();
-        // for (let i = 0; i < filteredData.length; i++) {
-        //     if (dataMap.has(filteredData[i].type)) {
-        //         let typeData = dataMap.get(filteredData[i].type);
-        //         typeData["totalCount"] += 1;
-        //         typeData[filteredData[i].country] += 1;
-        //         dataMap.set(filteredData[i].type, typeData);
-        //     } else {
-        //         let typeData = {
-        //             "name": filteredData[i].type,
-        //             "totalCount": 1,
-        //         }
-        //         for (const country of nuclearCountries) {
-        //             typeData[country] = 0;
-        //         }
-        //         typeData[filteredData[i].country] = 1;
-        //         dataMap.set(filteredData[i].type, typeData);
-        //     }
-        // }
 
         let type = ["solar_consumption", "wind_consumption", "biofuel_consumption", "hydro_consumption", "other_renewable_consumption"];
         let data = [];
@@ -71,10 +50,15 @@ class StackedBarchartType extends Component {
             "name": "",
             "Year": 0,
             "CHN": 0,
-            "AUS": 0,
+            "USA": 0,
+            "BRA": 0,
+            "CAN": 0,
             "IND": 0,
-            "FRA": 0,
-            "USA": 0
+            "DEU": 0,
+            "RUS": 0,
+            "JPN": 0,
+            "NOR": 0,
+            "ITA": 0,
         }
 
         for(let t in type){
@@ -87,7 +71,7 @@ class StackedBarchartType extends Component {
             let country = filteredData[row].country;
             for(let d in data){
                 let column = data[d]["name"];
-                data[d][country] = filteredData[row][column]
+                data[d][country] += filteredData[row][column]
             }
             
         }

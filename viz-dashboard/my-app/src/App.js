@@ -62,7 +62,7 @@ class App extends Component {
 
         this.colorScale = d3.scaleOrdinal()
             .domain(this.state.countries)
-            .range(d3.schemeCategory10)
+            .range(["#ffffd9","#edf8ba","#cdebb4","#97d7b9","#5dc0c0","#32a5c2","#217fb7","#2255a4","#1e3489","#081d58"])
         // this.colorScale = d3.scaleLinear().domain(this.state.countries)
         //                  .range(["white", "blue"]);
     }
@@ -90,7 +90,7 @@ class App extends Component {
                     })
                     this.colorScale = d3.scaleOrdinal()
                         .domain(countries)
-                        .range(d3.schemeCategory10)
+                        .range(["#ffffd9","#edf8ba","#cdebb4","#97d7b9","#5dc0c0","#32a5c2","#217fb7","#2255a4","#1e3489","#081d58"])
                     // this.colorScale = d3.scaleLinear().domain(countries)
                     // .range(["white", "blue"]);
 
@@ -208,7 +208,7 @@ class App extends Component {
                                 />
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={4}>
+                        <Col className="main-col-cards" sm={5}>
                             <Card style={{ height: "47vh" }}>
                                 <ParallelCoordinatePlot
                                     explosionsData={this.state.top_15_data}
@@ -220,7 +220,7 @@ class App extends Component {
                                 />
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={4}>
+                        <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "47vh" }}>
                             <PieChart
                                 explosionsData={this.state.top_15_data}

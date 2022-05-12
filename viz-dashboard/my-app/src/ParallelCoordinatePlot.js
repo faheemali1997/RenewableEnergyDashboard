@@ -44,39 +44,51 @@ class ParallelCoordinatePlot extends Component {
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });
 
         const filteredData = getFilteredData(explosionsData, filter, "");
-        // const filteredData = explosionsData
 
         const dimensions = [
             {
-                name: "biofuel_consumption",
-                type: Constants.NUMERICAL_FEATURE
-            },
-            {
-                name: "wind_consumption",
-                type: Constants.NUMERICAL_FEATURE
-            },
-            {
-                name: "other_renewable_consumption",
-                type: Constants.NUMERICAL_FEATURE
+                name: "country",
+                short_name: "country",
+                type: Constants.CATEGORICAL_FEATURE
             },
             {
                 name: "solar_consumption",
+                short_name: "solar",
                 type: Constants.NUMERICAL_FEATURE
             },
             {
                 name: "hydro_consumption",
+                short_name: "hydro",
                 type: Constants.NUMERICAL_FEATURE
             },
             {
-                name: "renewables_consumption",
+                name: "wind_consumption",
+                short_name: "wind",
                 type: Constants.NUMERICAL_FEATURE
             },
+            {
+                name: "biofuel_consumption",
+                short_name: "biofuel",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            {
+                name: "other_renewable_consumption",
+                short_name: "others",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            // {
+            //     name: "renewables_consumption",
+            //     short_name: "all_renewables",
+            //     type: Constants.NUMERICAL_FEATURE
+            // },
             {
                 name: "population",
+                short_name: "population",
                 type: Constants.NUMERICAL_FEATURE
             },
             {
                 name: "gdp",
+                short_name: "gdp",
                 type: Constants.NUMERICAL_FEATURE
             },
         ];
@@ -181,7 +193,7 @@ class ParallelCoordinatePlot extends Component {
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(0)")
             .attr("fill", "currentColor")
-            .text(dim => dim.name);
+            .text(dim => dim.short_name);
 
         g.call(g => g.selectAll("text")
             .clone(true).lower()
@@ -233,18 +245,19 @@ class ParallelCoordinatePlot extends Component {
                 selections.delete(key);
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     addRangeFilter(key, []);
-                } else {
-                    if (!!selections.get(key)) {
-                        removeFromFilter(key, selections.get(key)[0]);
-                    }
-                }
+                 } 
+                //else {
+                //     if (!!selections.get(key)) {
+                //         removeFromFilter(key, selections.get(key)[0]);
+                //     }
+                // }
             } else {
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     selections.set(key, selection.map(yScales.get(key).invert));
                     addRangeFilter(key, selections.get(key).slice().reverse());
                 } else {
                     selections.set(key, selection.map(scaleBandInvert(yScales.get(key))));
-                    addToFilter(key, selections.get(key)[0]);
+                    // addToFilter(key, selections.get(key)[0]);
                 }
             }
             const selected = [];

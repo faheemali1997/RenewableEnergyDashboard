@@ -116,7 +116,7 @@ class PieChart extends Component {
             const [first] = filter.country;
             return colorScale(first);
           }else if(d==0 && filter.country.size != 1){
-            return "#228C22";
+            return "#081d58";
           }else{
             return "#625D5D";
           }
