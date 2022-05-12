@@ -66,12 +66,22 @@ class WorldBubbleMap extends Component {
 
         let hydro_map = new Map();
         let solar_map = new Map();
+        let bio_fuel_map = new Map();
+        let wind_map = new Map();
+        let renew_map = new Map();
+
+        let min = 1000000000;
+        let max = 0;
         for(let row in filteredData_all){
             let country = filteredData_all[row].country;
             let country_code = countries_data_1.filter(d => d["alpha-3"] == country);
             if(typeof country_code !== 'undefined'){
                 let h = filteredData_all[row].hydro_consumption;
                 let s = filteredData_all[row].solar_consumption;
+                let b = filteredData_all[row].biofuel_consumption;
+                let w = filteredData_all[row].wind_consumption;
+                let r = filteredData_all[row].renewables_consumption;
+
                 if(typeof country_code[0] !== 'undefined'){
                     let cc = country_code[0]["country-code"];
 
@@ -80,9 +90,28 @@ class WorldBubbleMap extends Component {
 
                     let s_value = solar_map.get(cc) || 0;
                     solar_map.set(cc, s_value + s)
+
+                    let b_value = bio_fuel_map.get(cc) || 0;
+                    bio_fuel_map.set(cc, b_value + b)
+
+                    let w_value = wind_map.get(cc) || 0;
+                    wind_map.set(cc, w_value + w)
+
+                    let r_value = renew_map.get(cc) || 0;
+                    renew_map.set(cc, r_value + r)
+
+                    if(s_value+s > max){
+                        max = s_value+s
+                    }
+                    if(s_value+s < min){
+                        min = s_value+s
+                    }
                 }
             }
         }
+
+        console.log(min)
+        console.log(max)
 
         const zoom = d3.zoom()
             .scaleExtent([1, 8])
@@ -134,13 +163,20 @@ class WorldBubbleMap extends Component {
                         .range(d3.schemeBlues[7]);
             
             var colorScale_green = d3.scaleThreshold()
-                .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+                .domain([10, 1000, 5000, 25000, 50000 ,80000])
                 .range(d3.schemeGreens[7]);
 
             var colorScale_gray = d3.scaleThreshold()
-                .domain([10, 1000, 5000, 25000, 50000 ,80000])
+                .domain([10, 100, 1000, 5000, 10000 ,17000])
                 .range(d3.schemeGreys[7]);
-            
+
+            var colorScale_ylorbr = d3.scaleThreshold()
+            .domain([10, 100, 1000, 5000, 10000 ,17000])
+            .range(d3.schemeYlOrBr[7]);
+
+            var colorScale_pubugn = d3.scaleThreshold()
+            .domain([10, 100, 1000, 5000, 10000 ,17000])
+            .range(d3.schemePuBuGn[7]);            
 
             if(filter.type.size === 0){
                 if (country_long.indexOf(d.properties.name) !== -1) {
@@ -150,16 +186,20 @@ class WorldBubbleMap extends Component {
                 } 
             }
             else if(filter.type.has("renewable_consupmtion")){
-                d.total = 100000000;
-                return colorScale_green(d.total);
-            }
-            else if(filter.type.has("solar_consumption")){
+                let value = renew_map.get(d.id);
+                return colorScale_green(value);
+            }else if(filter.type.has("solar_consumption")){
                 let value = solar_map.get(d.id);
-                return colorScale_gray(d.total);
+                return colorScale_ylorbr(value);
             }else if(filter.type.has("hydro_consumption")){
-                // d.total = map["hydro_consumption"][country_short[country_long.indexOf(d.properties.name)]] || 0;
                 let value = hydro_map.get(d.id);
                 return colorScale_blue(value);
+            }else if(filter.type.has("wind_consumption")){
+                let value = wind_map.get(d.id);
+                return colorScale_gray(value);
+            }else if(filter.type.has("biofuel_consumption")){
+                let value = bio_fuel_map.get(d.id);
+                return colorScale_pubugn(value);
             }
 
         } 
@@ -173,16 +213,15 @@ class WorldBubbleMap extends Component {
             .attr("fill", d => fillColour(d))
             .attr("fill-opacity", d => {
                 if(filter.country.has([d.properties.name])){
-                    return 0.6
+                    return 0.8
                 }else{
-                    return 0.3;
+                    return 0.6;
                 }
             })   
             .attr("d", path)
             .on("mouseover", mouseOver )
             .on("mouseleave", mouseLeave )
             .on("click", function(e, d){
-                // let c = renew_map[d.properties.name]
                 let c = country_short[country_long.indexOf(d.properties.name)]
                 if(filter.country.has(c)){
                     removeFromFilter("country",c)

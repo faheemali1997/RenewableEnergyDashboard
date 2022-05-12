@@ -30,7 +30,7 @@ class App extends Component {
         "RUS" : "Russia",
         "JPN" : "Japan",
         "NOR" : "Norway",
-        // "ITA" : "Italy",
+        "ITA" : "Italy",
         // "SWE" : "Sweden",
         // "ESP" : "Spain",
         // "FRA" : "France",
@@ -63,6 +63,8 @@ class App extends Component {
         this.colorScale = d3.scaleOrdinal()
             .domain(this.state.countries)
             .range(d3.schemeCategory10)
+        // this.colorScale = d3.scaleLinear().domain(this.state.countries)
+        //                  .range(["white", "blue"]);
     }
 
     componentDidMount() {
@@ -78,7 +80,7 @@ class App extends Component {
                         }
                     }
                     let top_15_data = res["data"].filter(d => Object.keys(this.top_15_countries).indexOf(d.country) != -1)
-                    let countries = top_15_data.map(d=>d.country)
+                    let countries = new Set(top_15_data.map(d=>d.country))
                     this.setState({
                         countries_map: c,
                     	countries: [...new Set(countries)],
@@ -89,6 +91,13 @@ class App extends Component {
                     this.colorScale = d3.scaleOrdinal()
                         .domain(countries)
                         .range(d3.schemeCategory10)
+                    // this.colorScale = d3.scaleLinear().domain(countries)
+                    // .range(["white", "blue"]);
+
+                    console.log(countries);
+                    console.log(this.colorScale("USA"));
+                    console.log(this.colorScale("IND"));
+
                 }
             )
     }
