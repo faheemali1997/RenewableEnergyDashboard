@@ -5,7 +5,7 @@ import { Constants } from './utils/labels';
 import { LABEL } from './utils/labels';
 import { getFilteredData } from './utils/utility';
 
-class ExplosionsStackedAreaChart extends Component {
+class StackedAreaChart extends Component {
 
     width;
     height;
@@ -13,7 +13,7 @@ class ExplosionsStackedAreaChart extends Component {
     height1;
 
     componentDidMount() {
-        const container = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID);
+        const container = d3.select("#" + Constants.ENERGY_CONSUMPTION_STACKED_AREA_CHART_SVG_CONTAINER_ID);
         this.width = container.node().getBoundingClientRect().width;
         this.height = container.node().getBoundingClientRect().height;
         this.drawChart();
@@ -33,7 +33,7 @@ class ExplosionsStackedAreaChart extends Component {
             || this.props.filter.yield_lower !== prevProps.filter.yield_lower
             || this.props.filter.yield_upper !== prevProps.filter.yield_upper
         ) {
-            const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
+            const svg = d3.select("#" + Constants.ENERGY_CONSUMPTION_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
             this.drawChart();
         }
@@ -154,9 +154,9 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("dy", "1em")
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .text(LABEL.NUMBER_OF_EXPLOSIONS)
+            .text(LABEL.ENERGY_CONSUMPTION_TERAWATTS)
 
-        const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID)
+        const svg = d3.select("#" + Constants.ENERGY_CONSUMPTION_STACKED_AREA_CHART_SVG_CONTAINER_ID)
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height]);
 
@@ -167,7 +167,7 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("x", (this.width + margin.left) / 2)
             .attr("y", margin.top - 5)
             .attr("text-anchor", "middle")
-            .text(LABEL.EXPLOSION_TREND)
+            .text(LABEL.ENERGY_CONSUMPTION_TREND)
 
         svg.call(xTitle);
 
@@ -277,28 +277,14 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("height", this.height1 - margin.top - margin.bottom)
             .style("fill-opacity", 0)
             .call(zoom);
-
-        // svg.append("g")
-        //     .selectAll("text")
-        //     .data(events)
-        //     .join("text")
-        //     .attr("font-family", "sans-serif")
-        //     .attr("font-size", 14)
-        //     .attr("x", -(this.height - margin.bottom) / 2)
-        //     .attr("y", d => x(d.year))
-        //     .attr("text-anchor", "middle")
-        //     .attr("transform", "rotate(-90)")
-        //     .attr("text-anchor", "middle")
-        //     .text(d => d.event)
-
     }
 
     render() {
         return (
-            <Container fluid id={Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
+            <Container fluid id={Constants.ENERGY_CONSUMPTION_STACKED_AREA_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
         );
     }
 
 }
 
-export default ExplosionsStackedAreaChart;
+export default StackedAreaChart;

@@ -5,7 +5,7 @@ import { Constants } from './utils/labels';
 import { LABEL } from './utils/labels';
 import { getFilteredData } from './utils/utility';
 
-class StackedBarchartType extends Component {
+class StackedBarchart extends Component {
 
     width;
     height;
@@ -201,7 +201,7 @@ class StackedBarchartType extends Component {
             .attr("x", (width + margin.left) / 2)
             .attr("y", 15)
             .attr("text-anchor", "middle")
-            .text(LABEL.EXPLOSION_BY_TYPE)
+            .text(LABEL.ENERGY_CONSUMPTION)
     }
 
     render() {
@@ -212,4 +212,4 @@ class StackedBarchartType extends Component {
 
 }
 
-export default StackedBarchartType;
+export default StackedBarchart;

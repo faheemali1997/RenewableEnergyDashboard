@@ -12,7 +12,7 @@ class PieChart extends Component {
     height;
 
     componentDidMount() {
-        const container = d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID);
+        const container = d3.select("#" + Constants.PIE_CHART_SVG_CONTAINER_ID);
         this.width = container.node().getBoundingClientRect().width;
         this.height = container.node().getBoundingClientRect().height;
         this.drawChart();
@@ -24,7 +24,7 @@ class PieChart extends Component {
         || this.props.explosionsData !== prevProps.explosionsData
         || this.props.filter !== prevProps.filter
       )   
-      { const svg = d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID).select("svg");
+      { const svg = d3.select("#" + Constants.PIE_CHART_SVG_CONTAINER_ID).select("svg");
         svg.remove();
         this.drawChart();
       }
@@ -77,7 +77,7 @@ class PieChart extends Component {
     
       // Create new svg
       const svg = d3
-        .select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
+        .select("#" + Constants.PIE_CHART_SVG_CONTAINER_ID)
         .append('svg')
         .attr('width', this.width)
         .attr('height', this.height)
@@ -154,7 +154,7 @@ class PieChart extends Component {
 
     render() {
         return (
-            <Container fluid id={Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
+            <Container fluid id={Constants.PIE_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
         );
     }
 }

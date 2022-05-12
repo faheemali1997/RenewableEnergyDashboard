@@ -11,9 +11,9 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import WorldBubbleMap from './WorldBubbleMap';
-import StackedBarchartType from './StackedBarchartType';
+import StackedBarchart from './StackedBarChart';
 import ParallelCoordinatePlot from './ParallelCoordinatePlot';
-import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
+import StackedAreaChart from './StackedAreaChart';
 import PieChart from './PieChart';
 
 import { LABEL } from "./utils/labels";
@@ -179,7 +179,7 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={6}>
                             <Card style={{ height: "48vh" }}>
-                                <StackedBarchartType
+                                <StackedBarchart
                                     explosionsData={this.state.top_15_data}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.countries}
@@ -196,7 +196,7 @@ class App extends Component {
                     <Row>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "47vh" }}>
-                                <ExplosionsStackedAreaChart
+                                <StackedAreaChart
                                     explosionsData={this.state.top_15_data}
                                     explosionsFeatures={this.state.features}
                                     colorScale={this.colorScale}
