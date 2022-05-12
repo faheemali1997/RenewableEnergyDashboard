@@ -6,6 +6,8 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import WorldBubbleMap from './WorldBubbleMap';
@@ -51,20 +53,13 @@ class App extends Component {
 				country: new Set(),
 				type: new Set(),
 				purpose: new Set(),
-				yearRange: [1940, 2020],
-				magnitude_body: [],
-				magnitude_surface: [],
-				depth: [],
-				yield_lower: [],
-				yield_upper: [],
+				yearRange: [1990, 2020],
 			}
         }
 
         this.colorScale = d3.scaleOrdinal()
             .domain(this.state.countries)
             .range(["#ffffd9","#edf8ba","#cdebb4","#97d7b9","#5dc0c0","#32a5c2","#217fb7","#2255a4","#1e3489","#081d58"])
-        // this.colorScale = d3.scaleLinear().domain(this.state.countries)
-        //                  .range(["white", "blue"]);
     }
 
     componentDidMount() {
@@ -90,14 +85,7 @@ class App extends Component {
                     })
                     this.colorScale = d3.scaleOrdinal()
                         .domain(countries)
-                        .range(["#ffffd9","#edf8ba","#cdebb4","#97d7b9","#5dc0c0","#32a5c2","#217fb7","#2255a4","#1e3489","#081d58"])
-                    // this.colorScale = d3.scaleLinear().domain(countries)
-                    // .range(["white", "blue"]);
-
-                    console.log(countries);
-                    console.log(this.colorScale("USA"));
-                    console.log(this.colorScale("IND"));
-
+                        .range(["#ffffd9","#edf8ba","#cdebb4","#97d7b9","#5dc0c0","#32a5c2","#217fb7","#2255a4","#1e3489","#081d58"]);
                 }
             )
     }
@@ -131,7 +119,7 @@ class App extends Component {
         console.log("new filter", newFilter, this.state.filter);
 
         if (newFilter.country.size === 0 && newFilter.type.size === 0 && newFilter.purpose.size === 0) {
-            newFilter["yearRange"] = [1940, 2020];
+            newFilter["yearRange"] = [1990, 2020];
         }
         this.setState({
             filter: newFilter
@@ -144,14 +132,17 @@ class App extends Component {
 				country: new Set(),
 				type: new Set(),
 				purpose: new Set(),
-				yearRange: [1940, 2020],
-				magnitude_body: [],
-				magnitude_surface: [],
-				depth: [],
-				yield_lower: [],
-				yield_upper: [],
+				yearRange: [1990, 2020]
 			}
 		})
+    }
+
+    addGeoFilter = (event) => {
+        if (this.state.filter.type.has(event)) {
+            this.removeFromFilter("type", event);
+        } else {
+            this.addToFilter("type", event);
+        }
     }
 
     render() {
@@ -167,6 +158,13 @@ class App extends Component {
                     <Row>
 						<Col className="main-col-cards" sm={6}>
                             <Card style={{ height: "48vh" }}>
+                                <DropdownButton title="Type" id="dropdown-basic" onSelect={this.addGeoFilter}>
+                                        <Dropdown.Item eventKey="solar_consumption">Solar</Dropdown.Item>
+                                        <Dropdown.Item eventKey="wind_consumption">Wind</Dropdown.Item>
+                                        <Dropdown.Item eventKey="hydro_consumption">Hydro</Dropdown.Item>
+                                        <Dropdown.Item eventKey="biofuel_consumption">BioFuel</Dropdown.Item>
+                                </DropdownButton>
+
                                 <WorldBubbleMap
                                     countries_map={this.top_15_countries}
                                     explosionsData={this.state.original_data}

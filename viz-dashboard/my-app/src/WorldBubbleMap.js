@@ -69,9 +69,6 @@ class WorldBubbleMap extends Component {
         let bio_fuel_map = new Map();
         let wind_map = new Map();
         let renew_map = new Map();
-
-        let min = 1000000000;
-        let max = 0;
         for(let row in filteredData_all){
             let country = filteredData_all[row].country;
             let country_code = countries_data_1.filter(d => d["alpha-3"] == country);
@@ -99,19 +96,9 @@ class WorldBubbleMap extends Component {
 
                     let r_value = renew_map.get(cc) || 0;
                     renew_map.set(cc, r_value + r)
-
-                    if(s_value+s > max){
-                        max = s_value+s
-                    }
-                    if(s_value+s < min){
-                        min = s_value+s
-                    }
                 }
             }
         }
-
-        console.log(min)
-        console.log(max)
 
         const zoom = d3.zoom()
             .scaleExtent([1, 8])
@@ -176,7 +163,7 @@ class WorldBubbleMap extends Component {
 
             var colorScale_pubugn = d3.scaleThreshold()
             .domain([10, 100, 1000, 5000, 10000 ,17000])
-            .range(d3.schemePuBuGn[7]);            
+            .range(d3.schemePuRd[7]);            
 
             if(filter.type.size === 0){
                 if (country_long.indexOf(d.properties.name) !== -1) {

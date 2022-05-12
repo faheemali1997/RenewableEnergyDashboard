@@ -1,5 +1,5 @@
 export const LABEL = {
-    PAGE_HEADING: "World Energy Consumption",
+    PAGE_HEADING: "World Renewable Energy",
     NUCLEAR_STOCKPILE: "Nuclear Stockpile (Sqrt)",
     YEAR: "Year",
     NUCLEAR_STOCKPILE_TREND: "Nuclear Stockpile Trend",

@@ -73,7 +73,6 @@ class StackedBarchartType extends Component {
                 let column = data[d]["name"];
                 data[d][country] += filteredData[row][column]
             }
-            
         }
 
         const data_stacked = d3.stack()
@@ -143,24 +142,6 @@ class StackedBarchartType extends Component {
                     addToFilter("type", d.name);
                 }
             });
-        // .on("mouseover", function (e, d) {
-        //     d3.select(this)
-        //         .attr("fill-opacity", 1);
-        //     d3.select(this.parentNode)
-        //         .append('text')
-        //         .text(d['count'])
-        //         .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
-        //         .attr("y", yScale(d['count']) - 4)
-        //         .attr("font-size", "14")
-        //         .attr("font-weight", "bold")
-        //         .attr("text-anchor", "middle")
-        //         .attr("id", "temp_bar_chart_val")
-        //         .attr("fill", colorScale(d['category']));
-        // }).on("mouseout", function (e, d) {
-        //     d3.select(this)
-        //         .attr("fill-opacity", 0.6);
-        //     d3.select("#temp_bar_chart_val").remove();
-        // });
     }
 
     drawAxes = (svg,

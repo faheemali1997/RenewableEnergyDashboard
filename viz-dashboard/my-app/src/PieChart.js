@@ -46,12 +46,17 @@ class PieChart extends Component {
 
 
       const data = [
-        { label: 'renewables_consumption', 
-          value: 0 
+        { 
+          label: 'renewables_consumption', 
+          show_label: 'Renewable Energy',
+          value: 0,
+          per:0,
         }, 
         { 
           label: 'fossil_fuel_consumption', 
-          value: 0 
+          show_label: 'Non-Renewable Energy',
+          value: 0,
+          per: 0,
         }
       ];
 
@@ -63,85 +68,88 @@ class PieChart extends Component {
           if(data[d].label == 'fossil_fuel_consumption'){
               data[d].value += filteredData[row]['fossil_fuel_consumption']
           }
+       }
       }
-      }
-      
-      const outerRadius = 120;
-      const innerRadius = 0;
 
-      // const colorScale = d3     
-      //       .scaleSequential()      
-      //       .interpolator(d3.interpolateBuGn)      
-      //       .domain([0, data.length]);
-          
-      d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
-      .select('svg')
-      .remove();
+      let total = data[0].value + data[1].value;
+      data[0].per = data[0].value/total * 100;
+      data[1].per = data[1].value/total * 100;
     
-        // Create new svg
-        const svg = d3
-          .select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
-          .append('svg')
-          .attr('width', this.width)
-          .attr('height', this.height)
-          .append('g')
-          .attr('transform', `translate(${this.width / 2}, ${this.height / 2})`);
+      // Create new svg
+      const svg = d3
+        .select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
+        .append('svg')
+        .attr('width', this.width)
+        .attr('height', this.height)
+        .append('g')
+        .attr('transform', `translate(${this.width / 2}, ${this.height / 2})`);
 
-        svg.append("text")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", 16)
-          .attr("font-weight", "bold")
-          .attr("x", (this.width) / 12)
-          .attr("y", -140)
-          .attr("text-anchor", "middle")
-          .text("Electricity Consumption by Type")
-    
-        const arcGenerator = d3
-          .arc()
-          .innerRadius(innerRadius)
-          .outerRadius(outerRadius);
-    
-        const pieGenerator = d3
-          .pie()
-          .padAngle(0)
-          .value((d) => d.value);
-    
-        const arc = svg
-          .selectAll()
-          .data(pieGenerator(data))
-          .enter();
-    
-        let getColor = function(d){
-          if(d == 0 && filter.country.size == 1){
-            const [first] = filter.country;
-            return colorScale(first);
-          }else if(d==0 && filter.country.size != 1){
-            return "#081d58";
-          }else{
-            return "#625D5D";
-          }
-
-        }
-        // Append arcs
-        arc
-          .append('path')
-          .attr('d', arcGenerator)
-          .style('fill', (_, i) => getColor(i))
-          .style('stroke', '#ffffff')
-          .style('stroke-width', 0);
-    
-        // Append text labels
-        arc
-          .append('text')
-          .attr('text-anchor', 'middle')
-          .attr('alignment-baseline', 'middle')
-          .text((d) => d.data.label)
-          .style('fill', (_, i) => colorScale(data.length - i))
-          .attr('transform', (d) => {
-            const [x, y] = arcGenerator.centroid(d);
-            return `translate(${x+10}, ${y})`;
-          });
+      svg.append("text")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 16)
+        .attr("font-weight", "bold")
+        .attr("x", (this.width) / 12)
+        .attr("y",-160)
+        .attr("text-anchor", "middle")
+        .text("Renewable Vs Non-renewable")
         
+        let width = this.width;
+        let height = this.height;
+
+        var pie = d3.pie()
+        .sort(null)
+        .value(d => d.value);
+    
+        var arc = d3.arc()
+        .innerRadius(Math.min(width, height) / 2 - 150)
+        .outerRadius(Math.min(width, height) / 2 - 50)
+        .cornerRadius(15);
+    
+        var arcLabel = function(){
+            const radius = Math.min(width, height) / 2 * 0.8;
+            return d3.arc().innerRadius(radius).outerRadius(radius);
+        }
+        
+      let getColor = function(d){
+        if(d == 0 && filter.country.size == 1){
+          const [first] = filter.country;
+          return colorScale(first);
+        }else if(d==0 && filter.country.size != 1){
+          return "#081d58";
+        }else{
+          return "#949494";
+        }
+      }
+
+      const arcs = pie(data);
+        svg.append("g")
+      .attr("stroke", "white")
+      .selectAll("path")
+      .data(arcs)
+      .enter().append("path")
+      .attr("fill", (_,d) => getColor(d))
+      .attr("d", arc)
+      .append("title")
+      .text(d => `${d.data.show_label}: ${d.data.value.toLocaleString()}`);
+
+      svg.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 12)
+      .attr("text-anchor", "middle")
+      .selectAll("text")
+      .data(arcs)
+      .enter().append("text")
+      .attr("transform", d => `translate(${arcLabel().centroid(d)})`)
+      .call(text => text.append("tspan")
+      .attr("y", "-0.4em")
+      .attr("font-weight", "bold")
+      .text(d => d.data.show_label))
+      .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+      .attr("x", 0)
+      .attr("y", "0.7em")
+      .attr("fill-opacity", 0.7)
+      .text(d => d.data.value.toLocaleString())
+      .text(d => `${d.data.per.toLocaleString()}%`));
     }
 
     render() {
