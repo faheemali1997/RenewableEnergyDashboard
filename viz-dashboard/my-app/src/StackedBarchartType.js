@@ -92,12 +92,6 @@ class StackedBarchartType extends Component {
             
         }
 
-        console.log("1111111111");
-        console.log(data);
-        console.log("1111111111");
-
-        // const data_grouped = Array.from(dataMap.values());
-
         const data_stacked = d3.stack()
             .keys(nuclearCountries)
             (data)

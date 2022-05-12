@@ -49,15 +49,6 @@ class WorldBubbleMap extends Component {
 
         const filteredData = getFilteredData(top_15_data, filter, "");
         const filteredData_all = getFilteredData(explosionsData, filter, "");
-        
-        let renew_map = {
-            "Canada" : "CAN", 
-            "India" : "IND", 
-            "China" : "CHN", 
-            "United States of America": "USA", 
-            "Australia" : "AUS",
-            "France" : "FRA"
-        };
 
         let country_short = Object.keys(countries_map);
         let country_long = Object.values(countries_map);
@@ -73,62 +64,31 @@ class WorldBubbleMap extends Component {
             })
         }));
 
-        // let map ={
-        //     "hydro_consumption" : {
-        //         "USA":15000000,
-        //         "CHN":20000000,
-        //         "IND":8000000
-        //     },
-        //     "wind_consumption" : {
-        //         "USA":15000000,
-        //         "CHN":20000000,
-        //         "IND":8000000
-        //     },
-        //     "solar_consumption" : {
-        //         "USA":15000000,
-        //         "CHN":20000000,
-        //         "IND":8000000
-        //     },
-        //     "bio_consumption" : {
-        //         "USA":15000000,
-        //         "CHN":20000000,
-        //         "IND":8000000
-        //     }
-        // }
-
-        let max = 0;
-        let min = 100000000;
         let hydro_map = new Map();
+        let solar_map = new Map();
         for(let row in filteredData_all){
             let country = filteredData_all[row].country;
             let country_code = countries_data_1.filter(d => d["alpha-3"] == country);
             if(typeof country_code !== 'undefined'){
                 let h = filteredData_all[row].hydro_consumption;
+                let s = filteredData_all[row].solar_consumption;
                 if(typeof country_code[0] !== 'undefined'){
                     let cc = country_code[0]["country-code"];
-                    let value = hydro_map.get(cc) || 0;
-                    if(value > max){
-                        max = value;
-                    }
-                    if(value < min){
-                        min = value;
-                    }
-                    hydro_map.set(cc, value + h)
+
+                    let h_value = hydro_map.get(cc) || 0;
+                    hydro_map.set(cc, h_value + h)
+
+                    let s_value = solar_map.get(cc) || 0;
+                    solar_map.set(cc, s_value + s)
                 }
             }
         }
-        console.log("MAX: " + max)
-        console.log("MIN :"+ min)
 
         const zoom = d3.zoom()
             .scaleExtent([1, 8])
             .on("zoom", zoomed);
 
         const countries = topojson.feature(countries_data, countries_data.objects.countries);
-        
-        console.log("*************");
-        console.log(countries);
-        console.log("*************");
 
         const magScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.points))
@@ -170,7 +130,7 @@ class WorldBubbleMap extends Component {
         let fillColour = function(d){
 
             var colorScale_blue = d3.scaleThreshold()
-                        .domain([1, 1000, 10000, 500000, 1000000, 100000000])
+                        .domain([10, 1000, 5000, 25000, 50000 ,80000])
                         .range(d3.schemeBlues[7]);
             
             var colorScale_green = d3.scaleThreshold()
@@ -178,7 +138,7 @@ class WorldBubbleMap extends Component {
                 .range(d3.schemeGreens[7]);
 
             var colorScale_gray = d3.scaleThreshold()
-                .domain([1000, 10000, 100000, 500000, 1000000, 10000000])
+                .domain([10, 1000, 5000, 25000, 50000 ,80000])
                 .range(d3.schemeGreys[7]);
             
 
@@ -194,12 +154,11 @@ class WorldBubbleMap extends Component {
                 return colorScale_green(d.total);
             }
             else if(filter.type.has("solar_consumption")){
-                d.total = 100000000;
+                let value = solar_map.get(d.id);
                 return colorScale_gray(d.total);
             }else if(filter.type.has("hydro_consumption")){
                 // d.total = map["hydro_consumption"][country_short[country_long.indexOf(d.properties.name)]] || 0;
                 let value = hydro_map.get(d.id);
-                console.log("Val: " + value);
                 return colorScale_blue(value);
             }
 
