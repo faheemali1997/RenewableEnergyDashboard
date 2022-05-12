@@ -44,6 +44,7 @@ class ParallelCoordinatePlot extends Component {
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });
 
         const filteredData = getFilteredData(explosionsData, filter, "");
+        // const filteredData = explosionsData
 
         const dimensions = [
             {
@@ -66,18 +67,18 @@ class ParallelCoordinatePlot extends Component {
                 name: "hydro_consumption",
                 type: Constants.NUMERICAL_FEATURE
             },
-            // {
-            //     name: "purpose",
-            //     type: Constants.CATEGORICAL_FEATURE
-            // },
             {
                 name: "renewables_consumption",
                 type: Constants.NUMERICAL_FEATURE
             },
-            // {
-            //     name: "source",
-            //     type: Constants.CATEGORICAL_FEATURE
-            // },
+            {
+                name: "population",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            {
+                name: "gdp",
+                type: Constants.NUMERICAL_FEATURE
+            },
         ];
 
         const xScale = d3.scalePoint()

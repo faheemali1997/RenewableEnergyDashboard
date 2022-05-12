@@ -57,7 +57,7 @@ def data_info():
 
 @app.route('/data_energy')
 def data_energy():
-	data = pd.read_csv("WEC_Short.csv")
+	data = pd.read_csv("WEC_Short_1.csv")
 	features = data.columns
 	return {
 		'features': features.tolist(),

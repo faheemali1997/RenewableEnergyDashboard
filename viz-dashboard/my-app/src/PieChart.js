@@ -30,15 +30,11 @@ class PieChart extends Component {
       }
     }
 
-    // useEffect(() => {
-    //     drawChart();
-    //   }, [data]);
-
     drawChart = () => {
 
       const {
         explosionsData,
-        // colorScale,
+        colorScale,
         nuclearCountries,
         filter,
         addToFilter,
@@ -54,25 +50,9 @@ class PieChart extends Component {
           value: 0 
         }, 
         { 
-          label: 'other_renewable_consumption', 
+          label: 'fossil_fuel_consumption', 
           value: 0 
-        }, 
-        // { 
-        //   label: 'biofuel_consumption', 
-        //   value: 5 
-        // },
-        // { 
-        //   label: 'Nuclear Energy', 
-        //   value: 5 
-        // }, 
-        // { 
-        //   label: 'Coal Energy', 
-        //   value: 30 
-        // }, 
-        // { 
-        //   label: 'Gas Energy', 
-        //   value: 30 
-        // }
+        }
       ];
 
       for(let row in filteredData){
@@ -80,23 +60,19 @@ class PieChart extends Component {
           if(data[d].label == 'renewables_consumption'){
               data[d].value += filteredData[row]['renewables_consumption']
           }
-          if(data[d].label == 'other_renewable_consumption'){
-              data[d].value += filteredData[row]['other_renewable_consumption']
+          if(data[d].label == 'fossil_fuel_consumption'){
+              data[d].value += filteredData[row]['fossil_fuel_consumption']
           }
       }
       }
       
-      let type = ["solar_consumption", "wind_consumption", "biofuel_consumption", "hydro_consumption", "other_renewable_consumption"];
-
-
-
       const outerRadius = 120;
       const innerRadius = 0;
 
-        const colorScale = d3     
-            .scaleSequential()      
-            .interpolator(d3.interpolateCool)      
-            .domain([0, data.length]);
+      // const colorScale = d3     
+      //       .scaleSequential()      
+      //       .interpolator(d3.interpolateBuGn)      
+      //       .domain([0, data.length]);
           
       d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
       .select('svg')
@@ -135,11 +111,22 @@ class PieChart extends Component {
           .data(pieGenerator(data))
           .enter();
     
+        let getColor = function(d){
+          if(d == 0 && filter.country.size == 1){
+            const [first] = filter.country;
+            return colorScale(first);
+          }else if(d==0 && filter.country.size != 1){
+            return "#228C22";
+          }else{
+            return "#625D5D";
+          }
+
+        }
         // Append arcs
         arc
           .append('path')
           .attr('d', arcGenerator)
-          .style('fill', (_, i) => colorScale(i))
+          .style('fill', (_, i) => getColor(i))
           .style('stroke', '#ffffff')
           .style('stroke-width', 0);
     
@@ -152,7 +139,7 @@ class PieChart extends Component {
           .style('fill', (_, i) => colorScale(data.length - i))
           .attr('transform', (d) => {
             const [x, y] = arcGenerator.centroid(d);
-            return `translate(${x}, ${y})`;
+            return `translate(${x+10}, ${y})`;
           });
         
     }

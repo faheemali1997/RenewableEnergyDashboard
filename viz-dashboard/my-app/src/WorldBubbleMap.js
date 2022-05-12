@@ -33,6 +33,7 @@ class WorldBubbleMap extends Component {
     drawChart() {
 
         const {
+            countries_map,
             explosionsData,
             colorScale,
             nuclearCountries,
@@ -46,7 +47,7 @@ class WorldBubbleMap extends Component {
 
         const filteredData = getFilteredData(explosionsData, filter, "");
         
-        let renew_countries = ["Canada", "India", "China", "United States of America", "Australia","France"];
+        // let renew_countries = ["Canada", "India", "China", "United States of America", "Australia","France"];
         let renew_map = {
             "Canada" : "CAN", 
             "India" : "IND", 
@@ -55,6 +56,9 @@ class WorldBubbleMap extends Component {
             "Australia" : "AUS",
             "France" : "FRA"
         };
+
+        let country_short = Object.keys(countries_map);
+        let country_long = Object.values(countries_map);
 
 
         const data = filteredData.map(d => Object.assign({}, d, {
@@ -153,8 +157,8 @@ class WorldBubbleMap extends Component {
             
 
             if(filter.type.size === 0){
-                if (Object.keys(renew_map).indexOf(d.properties.name) !== -1) {
-                    return colorScale(renew_map[d.properties.name]);
+                if (country_long.indexOf(d.properties.name) !== -1) {
+                    return colorScale(country_short[country_long.indexOf(d.properties.name)]);
                 } else {
                     return Constants.DISABLED_COLOR;
                 } 
@@ -181,7 +185,7 @@ class WorldBubbleMap extends Component {
             .join("path")
             .attr("fill", d => fillColour(d))
             .attr("fill-opacity", d => {
-                if(filter.country.has(renew_map[d.properties.name])){
+                if(filter.country.has([d.properties.name])){
                     return 0.6
                 }else{
                     return 0.3;
@@ -191,7 +195,8 @@ class WorldBubbleMap extends Component {
             .on("mouseover", mouseOver )
             .on("mouseleave", mouseLeave )
             .on("click", function(e, d){
-                let c = renew_map[d.properties.name]
+                // let c = renew_map[d.properties.name]
+                let c = country_short[country_long.indexOf(d.properties.name)]
                 if(filter.country.has(c)){
                     removeFromFilter("country",c)
                 }else{

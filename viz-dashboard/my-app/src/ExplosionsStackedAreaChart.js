@@ -106,7 +106,7 @@ class ExplosionsStackedAreaChart extends Component {
 
         const x2 = d3.scaleLinear()
             // .domain(d3.extent(data, d => d.Year))
-            .domain([1989,2020])
+            .domain([1980,2020])
             .range([margin.left, this.width - margin.right])
 
         const y = d3.scaleLinear()
