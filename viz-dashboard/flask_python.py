@@ -21,25 +21,6 @@ app = Flask(__name__, static_url_path='', static_folder='my-app/build')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
 
-# @app.route("/", methods = ['POST', 'GET'])
-# def main():
-# 	return render_template("main.html", data=final_data)
-
-
-# @app.route("/biplot", methods = ['POST', 'GET'])
-# def biplot():
-# 	return render_template("biplot.html", data=final_data)
-
-
-# @app.route("/kmeans", methods = ['POST', 'GET'])
-# def kmeans():
-# 	return render_template("kmeans.html", data=final_data)
-
-
-# @app.route("/mds", methods = ['POST', 'GET'])
-# def mds():
-# 	return render_template("mds.html", data=final_data)
-
 @app.route('/data_info')
 def data_info():
 	data = pd.read_csv("merged_pgatour.csv")
@@ -48,12 +29,6 @@ def data_info():
 		'features': features.tolist(),
 		'data': data.to_dict(orient='records')
 	}
-
-	# features = ["country","country_x","year","biofuel_consumption","coal_consumption","fossil_fuel_consumption","gas_consumption","hydro_consumption","nuclear_consumption","oil_consumption","other_renewable_consumption","renewables_consumption","solar_consumption","wind_consumption",
-	# 			"coal_production","gas_production","oil_production",""
-	# 			"electricity_generation","population","gdp"
-	# 			"biofuel_electricity","coal_electricity","fossil_electricity","gas_electricity","hydro_electricity","nuclear_electricity","oil_electricity","other_renewable_electricity","other_renewable_exc_biofuel_electricity","renewables_electricity","solar_electricity","wind_electricity",
-	# 			]
 
 @app.route('/data_energy')
 def data_energy():

@@ -220,7 +220,6 @@ class ParallelCoordinatePlot extends Component {
             return g.transition().duration(500);
         }
 
-        // Returns the path for a given data point.
         function path_trace(d) {
             return line(dimensions.map((dim) => {
                 var v = dragging[dim.name];
@@ -246,18 +245,12 @@ class ParallelCoordinatePlot extends Component {
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     addRangeFilter(key, []);
                  } 
-                //else {
-                //     if (!!selections.get(key)) {
-                //         removeFromFilter(key, selections.get(key)[0]);
-                //     }
-                // }
             } else {
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     selections.set(key, selection.map(yScales.get(key).invert));
                     addRangeFilter(key, selections.get(key).slice().reverse());
                 } else {
                     selections.set(key, selection.map(scaleBandInvert(yScales.get(key))));
-                    // addToFilter(key, selections.get(key)[0]);
                 }
             }
             const selected = [];

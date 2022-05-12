@@ -202,7 +202,7 @@ class WorldBubbleMap extends Component {
                 if(filter.country.has([d.properties.name])){
                     return 0.8
                 }else{
-                    return 0.6;
+                    return 0.5;
                 }
             })   
             .attr("d", path)
