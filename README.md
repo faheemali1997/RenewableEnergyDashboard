@@ -2,6 +2,10 @@
 
 TechStack: React, Python Flask
 
+## Dataset
+
+https://www.kaggle.com/datasets/pralabhpoudel/world-energy-consumption
+
 ## Charts Implemented
 1. Chloropleth Graph
 2. Stacked Bar Chart
