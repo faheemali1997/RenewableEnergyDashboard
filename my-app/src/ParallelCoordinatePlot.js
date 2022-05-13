@@ -19,8 +19,8 @@ class ParallelCoordinatePlot extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.explosionsData.length !== prevProps.explosionsData.length
-            || this.props.explosionsData !== prevProps.explosionsData
+        if (this.props.original_data.length !== prevProps.original_data.length
+            || this.props.original_data !== prevProps.original_data
             || this.props.filter.country !== prevProps.filter.country
             || this.props.filter.purpose !== prevProps.filter.purpose
             || this.props.filter.yearRange !== prevProps.filter.yearRange
@@ -33,54 +33,64 @@ class ParallelCoordinatePlot extends Component {
 
     drawChart() {
         const {
-            explosionsData,
+            original_data,
             colorScale,
             filter,
             addRangeFilter,
-            // addToFilter,
-            // removeFromFilter,
+            addToFilter,
+            removeFromFilter,
         } = this.props;
 
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });
 
-        // const filteredData = getFilteredData(explosionsData, filter, "");
-        const filteredData = explosionsData
-
-        console.log(explosionsData);
+        const filteredData = getFilteredData(original_data, filter, "");
 
         const dimensions = [
             {
-                name: "biofuel_consumption",
+                name: "country",
+                short_name: "country",
+                type: Constants.CATEGORICAL_FEATURE
+            },
+            {
+                name: "solar_consumption",
+                short_name: "solar",
                 type: Constants.NUMERICAL_FEATURE
             },
             {
+                name: "hydro_consumption",
+                short_name: "hydro",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            {
+                name: "wind_consumption",
+                short_name: "wind",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            {
+                name: "biofuel_consumption",
+                short_name: "biofuel",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            {
+                name: "other_renewable_consumption",
+                short_name: "others",
+                type: Constants.NUMERICAL_FEATURE
+            },
+            // {
+            //     name: "renewables_consumption",
+            //     short_name: "all_renewables",
+            //     type: Constants.NUMERICAL_FEATURE
+            // },
+            {
                 name: "population",
+                short_name: "population",
                 type: Constants.NUMERICAL_FEATURE
             },
             {
                 name: "gdp",
+                short_name: "gdp",
                 type: Constants.NUMERICAL_FEATURE
             },
-            {
-                name: "coal_consumption",
-                type: Constants.NUMERICAL_FEATURE
-            },
-            {
-                name: "biofuel_electricity",
-                type: Constants.NUMERICAL_FEATURE
-            },
-            // {
-            //     name: "purpose",
-            //     type: Constants.CATEGORICAL_FEATURE
-            // },
-            {
-                name: "hydro_consumption",
-                type: Constants.CATEGORICAL_FEATURE
-            },
-            // {
-            //     name: "source",
-            //     type: Constants.CATEGORICAL_FEATURE
-            // },
         ];
 
         const xScale = d3.scalePoint()
@@ -183,7 +193,7 @@ class ParallelCoordinatePlot extends Component {
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(0)")
             .attr("fill", "currentColor")
-            .text(dim => dim.name);
+            .text(dim => dim.short_name);
 
         g.call(g => g.selectAll("text")
             .clone(true).lower()
@@ -210,7 +220,6 @@ class ParallelCoordinatePlot extends Component {
             return g.transition().duration(500);
         }
 
-        // Returns the path for a given data point.
         function path_trace(d) {
             return line(dimensions.map((dim) => {
                 var v = dragging[dim.name];
@@ -235,18 +244,13 @@ class ParallelCoordinatePlot extends Component {
                 selections.delete(key);
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     addRangeFilter(key, []);
-                // } else {
-                //     if (!!selections.get(key)) {
-                //         removeFromFilter(key, selections.get(key)[0]);
-                //     }
-                }
+                 } 
             } else {
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     selections.set(key, selection.map(yScales.get(key).invert));
                     addRangeFilter(key, selections.get(key).slice().reverse());
                 } else {
                     selections.set(key, selection.map(scaleBandInvert(yScales.get(key))));
-                    // addToFilter(key, selections.get(key)[0]);
                 }
             }
             const selected = [];

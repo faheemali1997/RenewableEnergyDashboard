@@ -4,7 +4,8 @@ import Container from 'react-bootstrap/Container';
 import * as topojson from "topojson-client";
 import { Constants } from './utils/labels';
 import countries_data from './data/countries-110m.json';
-// import { getFilteredData } from './util';
+import countries_data_1 from './data/country_code.json';
+import { getFilteredData } from './utils/utility';
 import { LABEL } from "./utils/labels";
 
 class WorldBubbleMap extends Component {
@@ -20,8 +21,8 @@ class WorldBubbleMap extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.explosionsData.length !== prevProps.explosionsData.length
-            || this.props.explosionsData !== prevProps.explosionsData
+        if (this.props.original_data.length !== prevProps.original_data.length
+            || this.props.original_data !== prevProps.original_data
             || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID).select("svg");
@@ -33,19 +34,25 @@ class WorldBubbleMap extends Component {
     drawChart() {
 
         const {
-            explosionsData,
+            countries_map,
+            original_data,
+            top_15_data,
             colorScale,
-            nuclearCountries,
+            // countries,
             filter,
+            addToFilter,
+            removeFromFilter
         } = this.props;
 
         const projection = d3.geoNaturalEarth1();
         const path = d3.geoPath(projection);
 
-        // console.log(nuclearCountries);
+        const filteredData = getFilteredData(top_15_data, filter, "");
+        const filteredData_all = getFilteredData(original_data, filter, "");
 
-        // const filteredData = getFilteredData(explosionsData, filter, "");
-        const filteredData = explosionsData;
+        let country_short = Object.keys(countries_map);
+        let country_long = Object.values(countries_map);
+
 
         const data = filteredData.map(d => Object.assign({}, d, {
             "position": path.centroid({
@@ -56,6 +63,42 @@ class WorldBubbleMap extends Component {
                 }
             })
         }));
+
+        let hydro_map = new Map();
+        let solar_map = new Map();
+        let bio_fuel_map = new Map();
+        let wind_map = new Map();
+        let renew_map = new Map();
+        for(let row in filteredData_all){
+            let country = filteredData_all[row].country;
+            let country_code = countries_data_1.filter(d => d["alpha-3"] == country);
+            if(typeof country_code !== 'undefined'){
+                let h = filteredData_all[row].hydro_consumption;
+                let s = filteredData_all[row].solar_consumption;
+                let b = filteredData_all[row].biofuel_consumption;
+                let w = filteredData_all[row].wind_consumption;
+                let r = filteredData_all[row].renewables_consumption;
+
+                if(typeof country_code[0] !== 'undefined'){
+                    let cc = country_code[0]["country-code"];
+
+                    let h_value = hydro_map.get(cc) || 0;
+                    hydro_map.set(cc, h_value + h)
+
+                    let s_value = solar_map.get(cc) || 0;
+                    solar_map.set(cc, s_value + s)
+
+                    let b_value = bio_fuel_map.get(cc) || 0;
+                    bio_fuel_map.set(cc, b_value + b)
+
+                    let w_value = wind_map.get(cc) || 0;
+                    wind_map.set(cc, w_value + w)
+
+                    let r_value = renew_map.get(cc) || 0;
+                    renew_map.set(cc, r_value + r)
+                }
+            }
+        }
 
         const zoom = d3.zoom()
             .scaleExtent([1, 8])
@@ -75,6 +118,78 @@ class WorldBubbleMap extends Component {
 
         svg.call(zoom);
 
+
+        let mouseOver = function(d) {
+            d3.selectAll(".Country")
+            .transition()
+            .duration(200)
+            .style("opacity", .5)
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .style("opacity", 1)
+            .style("stroke", "black")
+        }
+
+        let mouseLeave = function(d) {
+            d3.selectAll(".Country")
+            .transition()
+            .duration(200)
+            .style("opacity", .8)
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .style("stroke", "transparent")
+        }
+
+    
+        let fillColour = function(d){
+
+            var colorScale_blue = d3.scaleThreshold()
+                        .domain([10, 1000, 5000, 25000, 50000 ,80000])
+                        .range(d3.schemeBlues[7]);
+            
+            var colorScale_green = d3.scaleThreshold()
+                .domain([10, 1000, 5000, 25000, 50000 ,80000])
+                .range(d3.schemeGreens[7]);
+
+            var colorScale_gray = d3.scaleThreshold()
+                .domain([10, 100, 1000, 5000, 10000 ,17000])
+                .range(d3.schemeGreys[7]);
+
+            var colorScale_ylorbr = d3.scaleThreshold()
+            .domain([10, 100, 1000, 5000, 10000 ,17000])
+            .range(d3.schemeYlOrBr[7]);
+
+            var colorScale_pubugn = d3.scaleThreshold()
+            .domain([10, 100, 1000, 5000, 10000 ,17000])
+            .range(d3.schemePuRd[7]);            
+
+            if(filter.type.size === 0){
+                if (country_long.indexOf(d.properties.name) !== -1) {
+                    return colorScale(country_short[country_long.indexOf(d.properties.name)]);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                } 
+            }
+            else if(filter.type.has("renewable_consupmtion")){
+                let value = renew_map.get(d.id);
+                return colorScale_green(value);
+            }else if(filter.type.has("solar_consumption")){
+                let value = solar_map.get(d.id);
+                return colorScale_ylorbr(value);
+            }else if(filter.type.has("hydro_consumption")){
+                let value = hydro_map.get(d.id);
+                return colorScale_blue(value);
+            }else if(filter.type.has("wind_consumption")){
+                let value = wind_map.get(d.id);
+                return colorScale_gray(value);
+            }else if(filter.type.has("biofuel_consumption")){
+                let value = bio_fuel_map.get(d.id);
+                return colorScale_pubugn(value);
+            }
+
+        } 
         const countriesGroup = svg.append("g");
 
         countriesGroup
@@ -82,20 +197,25 @@ class WorldBubbleMap extends Component {
             .selectAll("path")
             .data(countries.features)
             .join("path")
-            .attr("fill", d => {
-                if (nuclearCountries.indexOf(d.properties.name) !== -1 &&
-                    (filter.country.size === 0 || filter.country.has(d.properties.name))) {
-                    // console.log("ColorScale");
-                    return colorScale(d.properties.name);
-                } else {
-                    // console.log("ColorScale Disabled");
-                    return colorScale(d.properties.name);
-                    //[TODO]
-                    // return Constants.DISABLED_COLOR;
+            .attr("fill", d => fillColour(d))
+            .attr("fill-opacity", d => {
+                if(filter.country.has([d.properties.name])){
+                    return 0.8
+                }else{
+                    return 0.5;
+                }
+            })   
+            .attr("d", path)
+            .on("mouseover", mouseOver )
+            .on("mouseleave", mouseLeave )
+            .on("click", function(e, d){
+                let c = country_short[country_long.indexOf(d.properties.name)]
+                if(filter.country.has(c)){
+                    removeFromFilter("country",c)
+                }else{
+                    addToFilter("country",c)
                 }
             })
-            .attr("fill-opacity", d => nuclearCountries.indexOf(d.properties.name) !== -1 ? 0.3 : 0.6)
-            .attr("d", path);
 
         countriesGroup
             .append("path")
@@ -107,84 +227,10 @@ class WorldBubbleMap extends Component {
             .attr("stroke-linejoin", "round")
             .attr("d", path);
 
-        const circles = svg.append("g")
-            .selectAll("circle")
-            .data(data.filter(d => d.position))
-            .join("circle")
-            .attr("transform", d => `translate(${d.position[0]},${d.position[1]})`)
-            .attr("fill", d => colorScale(d.country))
-            .attr("fill-opacity", 0.25)
-            .attr("stroke", d => colorScale(d.country))
-            .attr("stroke-opacity", 0.5)
-            .attr("stroke-width", 0.5)
-            .attr("r", d => magScale(d.magnitude_body));
-            
-            
-            // .on("mouseover", function (e, d) {
-            //     d3.select(this)
-            //         .attr("fill-opacity", 1);
-            //     let tooltipGroup = d3.select(this.parentNode)
-            //         .append("g")
-            //         .attr("font-size", "11")
-            //         .attr("font-weight", "bold")
-            //         .attr("text-anchor", "start")
-            //         .attr("class", "temp_bubble_text")
-            //         .attr("fill", colorScale(d.country));
-
-            //     tooltipGroup.append("rect")
-            //         .attr("width", 200)
-            //         .attr("height", 100)
-            //         .attr("fill", colorScale(d.country))
-            //         .attr("fill-opacity", 0.2);
-
-            //     tooltipGroup.append('text')
-            //         .text("Region:  " + d.region)
-            //         .attr("x", 10)
-            //         .attr("y", 10);
-            //     tooltipGroup.append('text')
-            //         .text("Source:  " + d.source)
-            //         .attr("x", 10)
-            //         .attr("y", 20);
-            //     tooltipGroup.append('text')
-            //         .text("Magnitude body:  " + d.magnitude_body)
-            //         .attr("x", 10)
-            //         .attr("y", 30);
-            //     tooltipGroup.append('text')
-            //         .text("Magnitude surface:  " + d.magnitude_surface)
-            //         .attr("x", 10)
-            //         .attr("y", 40);
-            //     tooltipGroup.append('text')
-            //         .text("Depth:  " + d.depth)
-            //         .attr("x", 10)
-            //         .attr("y", 50);
-            //     tooltipGroup.append('text')
-            //         .text("Yield (lower):  " + d.yield_lower)
-            //         .attr("x", 10)
-            //         .attr("y", 60);
-            //     tooltipGroup.append('text')
-            //         .text("Yield (upper):  " + d.yield_upper)
-            //         .attr("x", 10)
-            //         .attr("y", 70);
-            //     tooltipGroup.append('text')
-            //         .text("Purpose:  " + d.purpose)
-            //         .attr("x", 10)
-            //         .attr("y", 80);
-            //     tooltipGroup.append('text')
-            //         .text("Type:  " + d.type)
-            //         .attr("x", 10)
-            //         .attr("y", 90);
-            // }).on("mouseout", function (e, d) {
-            //     d3.select(this)
-            //         .attr("fill-opacity", 0.25);
-            //     d3.select(".temp_bubble_text").remove();
-            // });
-
         function zoomed(event) {
             const { transform } = event;
             countriesGroup.attr("transform", transform);
             countriesGroup.attr("stroke-width", 1 / transform.k);
-
-            circles.attr("transform", d => `translate(${transform.apply(d.position)})`)
         }
 
         svg.append("text")
