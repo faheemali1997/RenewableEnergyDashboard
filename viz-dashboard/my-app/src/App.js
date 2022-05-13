@@ -156,7 +156,7 @@ class App extends Component {
                 </Navbar>
                 <Container fluid style={{ height: "96vh", paddingTop: "40px" }}>
                     <Row>
-						<Col className="main-col-cards" sm={6}>
+						<Col className="main-col-cards" sm={7}>
                             <Card style={{ height: "48vh" }}>
                                 <DropdownButton title="Type" id="dropdown-basic" onSelect={this.addGeoFilter}>
                                         <Dropdown.Item eventKey="solar_consumption">Solar</Dropdown.Item>
@@ -177,7 +177,7 @@ class App extends Component {
                                 />
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={6}>
+                        <Col className="main-col-cards" sm={5}>
                             <Card style={{ height: "48vh" }}>
                                 <StackedBarchart
                                     original_data={this.state.top_15_data}
